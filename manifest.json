@@ -1,0 +1,19 @@
+{
+  "applications" : {
+    "gecko" : {
+      "id" : "add-course@sprico.com"
+    }
+  },
+
+  "manifest_version" : 2,
+  "name" : "Add Banweb Course",
+  "version" : "1.0",
+  "description" : "Adds a course to a Google Calendar based on the info in Banweb.",
+
+  "content_scripts" : [
+    {
+      "matches" : ["http://*.pdx.edu/*", "https://*.pdx.edu/*"],
+      "js" : ["add-course.js"]
+    }
+  ]
+}
