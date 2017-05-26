@@ -30,10 +30,6 @@ class CourseParser {
   getType(){
     return getTableType(this.summary());
   }
-
-  getInfo(){
-    return "{" + this.getType() + "}";
-  };
 }
 
 // course detail
@@ -52,10 +48,6 @@ class CourseDetail {
       return j;
     }, {});
   };
-
-  getInfo(){
-    return "CourseDetail: " + this.fullTitle;
-  }
 }
 
 // captures emails in an HTML element
@@ -108,10 +100,6 @@ class CourseSchedule {
       }
     }
   };
-
-  getInfo(){
-    return JSON.stringify(this);
-  }
 }
 
 var valid_page = function(){
@@ -127,8 +115,6 @@ if (valid_page()) {
     return new CourseParser(c);
   })
 
-  // console.dir(courses)
-  // console.log(courses.map(function(x){ return x.getInfo() }))
   console.dir(courses.map(function(c){
     if (c.getType() == XMLType.COURSE)
       return new CourseDetail(c.xml);
