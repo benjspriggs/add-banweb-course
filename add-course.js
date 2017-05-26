@@ -14,6 +14,10 @@ function getTableType(summary){
   });
 }
 
+function textByClass(name, elem, off = 0){
+  return elem.getElementsByClassName(name)[off].textContent;
+}
+
 class CourseParser {
   constructor(xml){
     this.xml = xml;
@@ -36,12 +40,42 @@ class CourseParser {
 class CourseDetail {
   constructor(xml){
     this.xml = xml;
-    this.fullTitle = this.xml.getElementsByClassName("captiontext")[0].textContent;
+    this.fullTitle = textByClass("captiontext", this.xml);
+    this.table = xml.getElementsByTagName("tbody")[0];
+
+    var rows = Array.from(this.table.getElementsByTagName("tr"));
+    this.json = rows.reduce(function(j, row){
+      var label = textByClass("ddlabel", row)
+        .replace(/:$/, '');
+      var text = textByClass("dddefault", row)
+      j[label] = text;
+      return j;
+    }, {});
   };
 
   getInfo(){
     return "CourseDetail: " + this.fullTitle;
   }
+}
+
+// captures emails in an HTML element
+var parseEmailElement = function(td){
+  var links = Array.from(td);
+  var emails = {};
+
+  // capture emails
+  if (links.length != 0)
+  {
+    // console.dir(links);
+
+    for (var ind in links){
+      var target = links[ind].getAttribute("target");
+      var href = links[ind].getAttribute("href");
+      emails[target] = href;
+    }
+  }
+
+  return emails
 }
 
 // course schedule
@@ -66,24 +100,11 @@ class CourseSchedule {
       for (var e in l){
         var headertext = l[e][0].textContent;
         var actualtext = l[e][1].textContent;
-        var links = Array.from(l[e][1].getElementsByTagName("a"));
 
         this.json[i][headertext] = actualtext;
 
-        // capture emails
-        if (links.length != 0)
-        {
-          // console.dir(links);
-          var emails = {}
-
-          for (var ind in links){
-            var target = links[ind].getAttribute("target");
-            var href = links[ind].getAttribute("href");
-            emails[target] = href;
-          }
-
-          this.json[i]["Emails"] = emails;
-        }
+        var links = Array.from(l[e][1].getElementsByTagName("a"));
+        this.json[i]["Emails"] = parseEmailElement(links);
       }
     }
   };
@@ -96,7 +117,6 @@ class CourseSchedule {
 var valid_page = function(){
   return document.title == "Student Detail Schedule"
 }
-
 
 // page handling
 if (valid_page()) {
