@@ -12,7 +12,8 @@
 
   "content_scripts" : [
     {
-      "matches" : ["http://*.pdx.edu/*", "https://*.pdx.edu/*"],
+      "matches" : ["<all_urls>"],
+      "matches_old" : ["http://*.pdx.edu/*", "https://*.pdx.edu/*"],
       "js" : ["add-course.js"]
     }
   ]
