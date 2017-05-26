@@ -55,13 +55,37 @@ class CourseSchedule {
       return r.getElementsByClassName("ddheader").length == 0;
     });
 
-    // this.json = []
+    this.json = []
 
-    // for (var i = 0; i < this.rows.length; ++i) {
-    //   this.json[i] = this.rows[i].map(function(d, j){
-    //     return [this.headers[j], this.rows[i][j]];
-    //   });
-    // }
+    for (var i = 0; i < this.rows.length; ++i) {
+      var cells = Array.from(this.rows[i].cells)
+      var l = cells.map(function(d, j){
+        return [this.headers.cells[j], cells[j]];
+      }, this);
+      this.json[i] = {};
+      for (var e in l){
+        var headertext = l[e][0].textContent;
+        var actualtext = l[e][1].textContent;
+        var links = Array.from(l[e][1].getElementsByTagName("a"));
+
+        this.json[i][headertext] = actualtext;
+
+        // capture emails
+        if (links.length != 0)
+        {
+          // console.dir(links);
+          var emails = {}
+
+          for (var ind in links){
+            var target = links[ind].getAttribute("target");
+            var href = links[ind].getAttribute("href");
+            emails[target] = href;
+          }
+
+          this.json[i]["Emails"] = emails;
+        }
+      }
+    }
   };
 
   getInfo(){
@@ -69,13 +93,13 @@ class CourseSchedule {
   }
 }
 
-var validate_page = function(){
+var valid_page = function(){
   return document.title == "Student Detail Schedule"
 }
 
 
 // page handling
-if (validate_page()) {
+if (valid_page()) {
   document.body.style.border = "5px solid red";
   var courses = Array.from(document.getElementsByClassName("datadisplaytable"));
 
