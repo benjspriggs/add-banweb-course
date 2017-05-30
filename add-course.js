@@ -42,7 +42,7 @@ class CourseDetail {
     var rows = Array.from(this.table.getElementsByTagName("tr"));
     this.json = rows.reduce(function(j, row){
       var label = textByClass("ddlabel", row)
-        .replace(/:$/, '');
+  .replace(/:$/, '');
       var text = textByClass("dddefault", row)
       j[label] = text;
       return j;
@@ -86,17 +86,17 @@ class CourseSchedule {
     for (var i = 0; i < this.rows.length; ++i) {
       var cells = Array.from(this.rows[i].cells)
       var l = cells.map(function(d, j){
-        return [this.headers.cells[j], cells[j]];
+  return [this.headers.cells[j], cells[j]];
       }, this);
       this.json[i] = {};
       for (var e in l){
-        var headertext = l[e][0].textContent;
-        var actualtext = l[e][1].textContent;
+  var headertext = l[e][0].textContent;
+  var actualtext = l[e][1].textContent;
 
-        this.json[i][headertext] = actualtext;
+  this.json[i][headertext] = actualtext;
 
-        var links = Array.from(l[e][1].getElementsByTagName("a"));
-        this.json[i]["Emails"] = parseEmailElement(links);
+  var links = Array.from(l[e][1].getElementsByTagName("a"));
+  this.json[i]["Emails"] = parseEmailElement(links);
       }
     }
   };
