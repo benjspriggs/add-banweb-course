@@ -114,17 +114,6 @@ function doThing(text){
   alert(text)
 }
 
-function makeButton(id, text){
-  var button = document.createElement("button")
-  button.className += "button button-circle button-tiny"
-  button.setAttribute("id", id)
-  button.onclick = function(){ doThing(id) }
-  // button.setAttribute("onclick", "doThing(\"" + id + "\")")
-  var text = document.createTextNode(text)
-  button.appendChild(text)
-  return button;
-}
-
 // full course info
 class CourseInfo {
   constructor(pair){
@@ -140,9 +129,36 @@ class CourseInfo {
     // var text = document.createTextNode("test")
     // var div = document.createElement("div")
     // div.appendChild(text)
-    row.appendChild(makeButton(this.detail.fullTitle, "click"))
+    row.appendChild(this.makeButton(this.detail.fullTitle, "click", this.makeIcs()))
   }
 
+  makeButton(id, text, thing){
+    var button = document.createElement("button")
+    button.className += "button button-circle button-tiny"
+    button.setAttribute("id", id)
+    button.onclick = function(){ doThing(id) }
+    // button.setAttribute("onclick", "doThing(\"" + id + "\")")
+    var text = document.createTextNode(text)
+    button.appendChild(text)
+
+    var hideme = document.createElement("div")
+    hideme.style.display = "none"
+    var guts = document.createTextNode(thing)
+    hideme.appendChild(guts)
+    button.appendChild(hideme)
+
+    return button;
+  }
+
+  makeIcs(){
+    return JSON.stringify(this)
+  }
+
+  makeDiv(parent, id){
+    var div = document.createEleemnt("div")
+    var text = 
+    parent.appendChild(div)
+  }
 }
 
 var valid_page = function(){
