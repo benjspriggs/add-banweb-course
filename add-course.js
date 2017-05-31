@@ -110,11 +110,16 @@ class CourseSchedule {
   };
 }
 
+function doThing(text){
+  alert(text)
+}
+
 function makeButton(id, text){
   var button = document.createElement("button")
   button.className += "button button-circle button-tiny"
   button.setAttribute("id", id)
-  button.setAttribute("onclick", "doThing(\"" + id + "\")")
+  button.onclick = function(){ doThing(id) }
+  // button.setAttribute("onclick", "doThing(\"" + id + "\")")
   var text = document.createTextNode(text)
   button.appendChild(text)
   return button;
