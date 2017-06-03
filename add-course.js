@@ -1,3 +1,15 @@
+function includeScript(source, type="text/javascript"){
+  var script = document.createElement("script")
+  script.setAttribute("src", source)
+  // script.setAttribute("type", type)
+  document.head.appendChild(script)
+}
+
+// add the button css
+// includeScript("https://code.jquery.com/jquery-3.2.1.min.js")
+// includeScript("http://unicorn-ui.com/buttons/css/buttons.css")
+includeScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js")
+
 var XMLType = {
   TIMES: 0,
   COURSE: 1,
@@ -42,7 +54,7 @@ class CourseDetail {
     var rows = Array.from(this.table.getElementsByTagName("tr"));
     this.json = rows.reduce(function(j, row){
       var label = textByClass("ddlabel", row)
-        .replace(/:$/, '');
+  .replace(/:$/, '');
       var text = textByClass("dddefault", row)
       j[label] = text;
       return j;
@@ -89,24 +101,27 @@ class CourseSchedule {
       return r.getElementsByClassName("ddheader").length == 0;
     });
 
-    this.json = []
+    var rowCells = this.rows.map(function(row){
+        var cells = Array.from(row.cells)
+        return cells.map(function(d, j){
+                  return [this.headers.cells[j], cells[j]];
+                }, this);
+        }, this)
+    var somethingElse = rowCells
+      .map(function(row){
+        return row.reduce(function(prev, cur){
+          var headertext = cur[0].textContent;
+          var actualtext = cur[1].textContent;
 
-    for (var i = 0; i < this.rows.length; ++i) {
-      var cells = Array.from(this.rows[i].cells)
-      var l = cells.map(function(d, j){
-        return [this.headers.cells[j], cells[j]];
-      }, this);
-      this.json[i] = {};
-      for (var e in l){
-        var headertext = l[e][0].textContent;
-        var actualtext = l[e][1].textContent;
+          prev[headertext] = actualtext;
 
-        this.json[i][headertext] = actualtext;
-
-        var links = Array.from(l[e][1].getElementsByTagName("a"));
-        this.json[i]["Emails"] = parseEmailElement(links);
-      }
-    }
+          var links = Array.from(cur[1].getElementsByTagName("a"));
+          if (links.length != 0)
+            prev["Emails"] = parseEmailElement(links);
+          return prev;
+        }, {});
+      }, []);
+    this.json = somethingElse;
   };
 }
 
@@ -136,8 +151,9 @@ class CourseInfo {
     var button = document.createElement("button")
     button.className += "button button-circle button-tiny"
     button.setAttribute("id", id)
-    button.onclick = function(){ doThing(id) }
-    // button.setAttribute("onclick", "doThing(\"" + id + "\")")
+    var s = this.makeIcs()
+    button.addEventListener("click", 
+      function(){ console.log(s) })
     var text = document.createTextNode(text)
     button.appendChild(text)
 
@@ -151,7 +167,27 @@ class CourseInfo {
   }
 
   makeIcs(){
-    return JSON.stringify(this)
+    var some = this.schedule.json[0]["Date Range"].split(" - ");
+    var start = moment(some[0]);
+    var end = moment(some[1]);
+    console.log(start);
+    console.log(end);
+    var loc = "location";
+    var date = "date entered";
+    return 'BEGIN:VCALENDAR \n\
+VERSION:2.0 \n\
+PRODID:add-banweb \n\
+METHOD:PUBLISH \n\
+BEGIN:VEVENT \n\
+URL:'+ "url" +' \n\
+UID:'+ "url" +' \n\
+SUMMARY:'+ this.detail.fullTitle +' \n\
+DTSTAMP:'+ date +' \n\
+DTSTART:'+ start +' \n\
+DTEND:'+ end +' \n\
+LOCATION:'+ loc +'  \
+END:VEVENT \
+END:VCALENDAR';
   }
 
   makeDiv(parent, id){
@@ -165,18 +201,7 @@ var valid_page = function(){
   return document.title == "Student Detail Schedule"
 }
 
-function includeScript(source){
-  var script = document.createElement("script")
-  script.setAttribute("src", "http://unicorn-ui.com/buttons/css/buttons.css")
-  script.setAttribute("type", "text/javascript")
-  document.head.appendChild(script)
-}
-
-// page handling
-if (valid_page()) {
-  // add the button css
-  // includeScript("https://code.jquery.com/jquery-3.2.1.min.js")
-  // includeScript("http://unicorn-ui.com/buttons/css/buttons.css")
+function handlePage(){
 
   var courses = Array.from(document.getElementsByClassName("datadisplaytable"));
 
@@ -205,5 +230,10 @@ if (valid_page()) {
 
   console.dir(parsed);
 
-  parsed.forEach(function(x){ x.append() });
+  parsed.forEach(function(x){ console.log(x.makeIcs()); x.append() });
+}
+
+// page handling
+if (valid_page()) {
+  handlePage()
 }
