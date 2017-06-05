@@ -12,9 +12,10 @@
 
   "content_scripts" : [
     {
-      "matches" : ["<all_urls>"],
-      "matches_old" : ["http://*.pdx.edu/*", "https://*.pdx.edu/*"],
-      "js" : ["add-course.js"]
+      "matches_all" : ["<all_urls>"],
+      "matches" : ["*://banweb.pdx.edu/*"],
+      "css" : ["css/buttons.css", "css/highlight.css"],
+      "js" : ["js/moment.js","js/date.js","js/month.js","js/parser.js","js/ics.js","js/address.js","js/add-course.js","js/page-handle.js"]
     }
   ]
 }
