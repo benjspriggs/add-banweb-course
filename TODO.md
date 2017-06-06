@@ -1,0 +1,1 @@
+- [ ] Add way to press a button and ICS gets emitted for a calendar with all the events on the page as a copy/ pasteable thing
