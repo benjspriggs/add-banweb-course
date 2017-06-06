@@ -4,17 +4,17 @@ String.prototype.strip = function(substr){
 
 Date.prototype.toICSDateTime = function(){
   var mom = moment(this)
-  return mom.format("YYYYMMDDTHHMMSSSS") + "Z";
+  return mom.format("YYYYMMDDTHHMMSS") + "Z";
 }
 
 const weekMap = {
-  "M" : "Mon",
-  "T" : "Tue",
-  "W" : "Wed",
-  "R" : "Thurs",
-  "F" : "Fri",
-  "S" : "Sat",
-  "U" : "Sun"
+  "M" : "MO",
+  "T" : "TU",
+  "W" : "WE",
+  "R" : "TH",
+  "F" : "FR",
+  "S" : "SA",
+  "U" : "SU"
 }
 
 // converts a string of single
