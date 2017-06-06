@@ -18,31 +18,47 @@ class CourseSchedule {
     });
 
     var rowCells = this.rows.map(function(row){
-  var cells = Array.from(row.cells)
-  return cells.map(function(d, j){
-      return [this.headers.cells[j], cells[j]];
-    }, this);
-  }, this)
+      var cells = Array.from(row.cells)
+      return cells.map(function(d, j){
+        return [this.headers.cells[j], cells[j]];
+      }, this);
+    }, this)
     var somethingElse = rowCells
       .map(function(row){
-  return row.reduce(function(prev, cur){
-    var headertext = cur[0].textContent;
-    var actualtext = cur[1].textContent;
+        return row.reduce(function(prev, cur){
+          var headertext = cur[0].textContent;
+          var actualtext = cur[1].textContent;
 
-    prev[headertext] = actualtext;
+          prev[headertext] = actualtext;
 
-    var links = Array.from(cur[1].getElementsByTagName("a"));
-    if (links.length != 0)
-      prev["Emails"] = parseEmailElement(links);
-    return prev;
-  }, {});
+          var links = Array.from(cur[1].getElementsByTagName("a"));
+          if (links.length != 0)
+            prev["Emails"] = parseEmailElement(links);
+          return prev;
+        }, {});
       }, []);
     this.json = somethingElse;
   };
 }
 
-function doThing(text){
-  alert(text)
+// courtesy
+// http://www.satya-weblog.com/2013/11/javascript-select-all-content-html-element.html
+function selectText(element){
+  var doc = document
+    , text = element
+    , range, selection
+  ;
+  if (doc.body.createTextRange) { //ms
+    range = doc.body.createTextRange();
+    range.moveToElementText(text);
+    range.select();
+  } else if (window.getSelection) { //all others
+    selection = window.getSelection();
+    range = doc.createRange();
+    range.selectNodeContents(text);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
 }
 
 // full course info
@@ -59,7 +75,15 @@ class CourseInfo {
     // var text = document.createTextNode("test")
     // var div = document.createElement("div")
     // div.appendChild(text)
-    var button = this.makeButton(this.detail.fullTitle, "click", this.makeIcs())
+    // make the div that displays the ICS
+    var hideme = this.makeHidemeDiv()
+
+    var revealHideme = function (e) {
+      // console.log("something goes here that reveals the hideme div")
+      hideme.style.display = ""
+    }
+
+    var button = this.makeButton(this.detail.fullTitle, "ICS", revealHideme)
 
     var c = Array.from(row.childNodes);
     var x = c.filter(function(elem) { 
@@ -69,28 +93,45 @@ class CourseInfo {
     })
 
     row.appendChild(button)
+    row.appendChild(hideme)
     setTimeout(function(){
       row.classList.remove("highlight")
     }, 1000)
   }
 
-  makeButton(id, text, thing){
+  makeButton(id, text, onc){
     var button = document.createElement("button")
-    button.className += "button button-circle button-tiny"
+    var hideme = document.createElement("div")
+
+    button.className += "button button-circle button-small"
     button.setAttribute("id", id)
+
     var s = this.makeIcs()
-    button.addEventListener("click", 
-      function(){ console.log(s) })
+
+    button.onclick = onc
     var text = document.createTextNode(text)
     button.appendChild(text)
 
-    var hideme = document.createElement("div")
-    hideme.style.display = "none"
-    var guts = document.createTextNode(thing)
-    hideme.appendChild(guts)
-    button.appendChild(hideme)
-
     return button;
+  }
+
+  makeHidemeDiv(){
+    var hideme = document.createElement("div")
+
+    hideme.style.display = "none"
+    hideme.appendChild(this.makeButton("close", "x", function(e){
+      // alert("On blur for the hideme div")
+      hideme.style.display = "none"
+    }))
+
+    var pre = document.createElement("pre")
+    pre.innerHTML += this.makeIcs()
+    pre.onclick = function (e){
+      selectText(pre)
+    }
+    hideme.appendChild(pre) 
+
+    return hideme
   }
 
   makeIcs(){
@@ -113,6 +154,7 @@ class CourseInfo {
     });
   }
 
+  // creates a div with an id
   makeDiv(parent, id){
     var div = document.createElement("div")
     var text = document.createTextNode("something")
