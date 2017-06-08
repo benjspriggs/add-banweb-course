@@ -20,22 +20,22 @@ class CourseSchedule {
     var rowCells = this.rows.map(function(row){
       var cells = Array.from(row.cells)
       return cells.map(function(d, j){
-        return [this.headers.cells[j], cells[j]];
+  return [this.headers.cells[j], cells[j]];
       }, this);
     }, this)
     var somethingElse = rowCells
       .map(function(row){
-        return row.reduce(function(prev, cur){
-          var headertext = cur[0].textContent;
-          var actualtext = cur[1].textContent;
+  return row.reduce(function(prev, cur){
+    var headertext = cur[0].textContent;
+    var actualtext = cur[1].textContent;
 
-          prev[headertext] = actualtext;
+    prev[headertext] = actualtext;
 
-          var links = Array.from(cur[1].getElementsByTagName("a"));
-          if (links.length != 0)
-            prev["Emails"] = parseEmailElement(links);
-          return prev;
-        }, {});
+    var links = Array.from(cur[1].getElementsByTagName("a"));
+    if (links.length != 0)
+      prev["Emails"] = parseEmailElement(links);
+    return prev;
+  }, {});
       }, []);
     this.json = somethingElse;
   };
@@ -142,11 +142,13 @@ class CourseInfo {
     var date = new Date().toICSDateTime();
     var days = weekly(this.schedule.json[0]["Days"]);
     return makeEvent({
+      version: "2.0",
       summary: this.detail.fullTitle,
+      rrule: "FREQ=event",
       byDay: days,
       timestamp: date,
-      dateStart: start,
-      dateEnd: end,
+      dtstart: start,
+      dtend: end,
       location: loc,
       url: window.location.href,
       prodid: "add-banweb",
