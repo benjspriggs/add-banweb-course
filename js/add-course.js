@@ -134,28 +134,28 @@ class CourseInfo {
     return hideme
   }
 
-  makeIcs(){
+  parsedEvent(){
     var some = this.schedule.json[0]["Date Range"].split(" - ");
     var start = parseWeirdDate(some[0]).toICSDateTime();
     var end = parseWeirdDate(some[1]).toICSDateTime();
     var loc = portlandStatePhysicalAddress(this.schedule.json[0]["Where"]);
     var date = new Date().toICSDateTime();
     var days = weekly(this.schedule.json[0]["Days"]);
-    return makeEvent({
-      version: "2.0",
+    return {
       summary: this.detail.fullTitle,
-      rrule: "FREQ=event",
-      byDay: days,
-      timestamp: date,
+      rrule: "FREQ=WEEKLY;" + "BYDAY=" + days,
+      dtstamp: date,
       dtstart: start,
       dtend: end,
       location: loc,
       url: window.location.href,
-      prodid: "add-banweb",
       uid: new Date().getTime() + "@add-banweb"
-    });
+    };
   }
 
+  makeIcs(){
+    return makeEvent(this.parsedEvent());
+  }
   // creates a div with an id
   makeDiv(parent, id){
     var div = document.createElement("div")

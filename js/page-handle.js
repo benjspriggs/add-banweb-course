@@ -30,6 +30,11 @@ function handlePage(){
   })
 
   parsed.forEach(function(x){ x.append() });
+  var events = parsed.map(function(x){ 
+    return x.parsedEvent()
+  })
+  console.dir(events);
+  console.log(makeCalendar("add-banweb\nVERSION:2.0", events))
 }
 
 // page handling

@@ -1,3 +1,29 @@
+function keyed(object){
+  var built = []
+  for (var key in object) {
+    built.push(key.toUpperCase() + ":" + object[key])
+  }
+  return built
+}
+
+function bookEnd(type, string, sep = '\n'){
+  return "BEGIN:" + type.toUpperCase() + sep + string + sep + "END:" + type.toUpperCase() + sep;
+}
+
+class ICalCalendar {
+  constructor(prodid, events, version = "2.0"){
+    this.prodid = prodid
+    this.events = events
+    this.version = version
+  }
+
+  asIcs(){
+    var events = makeEvents(this.events)
+    var meta = keyed({ version: this.version, prodid: this.prodid }).join('\n')
+    return bookEnd("vcalendar", meta + '\n' + events)
+  }
+}
+
 function asIcs(type, object){
   var built = [];
 
@@ -39,7 +65,7 @@ function makeEvents(events){
   }).join("\n");
 }
 
-function makeCalendar(events){
-  return asIcs("VCALENDAR", makeEvents(events));
+function makeCalendar(prodid, events){
+  return "BEGIN:VCALENDAR\nPRODID:" + prodid + "\n" + makeEvents(events) + "\nEND:VCALENDAR";
 }
 

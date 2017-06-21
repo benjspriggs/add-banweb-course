@@ -12,8 +12,7 @@
 
   "content_scripts" : [
     {
-      "matches_all" : ["<all_urls>"],
-      "matches" : ["*://banweb.pdx.edu/*"],
+      "matches" : ["*://banweb.pdx.edu/*", "<all_urls>"],
       "css" : ["css/buttons.css", "css/highlight.css"],
       "js" : ["js/moment.js","js/date.js","js/month.js","js/parser.js","js/ics.js","js/address.js","js/add-course.js","js/page-handle.js"]
     }
