@@ -100,38 +100,11 @@ class CourseInfo {
   }
 
   makeButton(id, text, onc){
-    var button = document.createElement("button")
-    var hideme = document.createElement("div")
-
-    button.className += "button button-circle button-small"
-    button.setAttribute("id", id)
-
-    var s = this.makeIcs()
-
-    button.onclick = onc
-    var text = document.createTextNode(text)
-    button.appendChild(text)
-
-    return button;
+    return makeButton(id, text, onc, this.makeIcs())
   }
 
   makeHidemeDiv(){
-    var hideme = document.createElement("div")
-
-    hideme.style.display = "none"
-    hideme.appendChild(this.makeButton("close", "x", function(e){
-      // alert("On blur for the hideme div")
-      hideme.style.display = "none"
-    }))
-
-    var pre = document.createElement("pre")
-    pre.innerHTML += this.makeIcs()
-    pre.onclick = function (e){
-      selectText(pre)
-    }
-    hideme.appendChild(pre) 
-
-    return hideme
+    return makeHidemeDiv(this.makeIcs())
   }
 
   parsedEvent(){
@@ -164,3 +137,37 @@ class CourseInfo {
   }
 }
 
+function makeButton(id, text, onc, str){
+  var button = document.createElement("button")
+  var hideme = document.createElement("div")
+
+  button.className += "button button-circle button-small"
+  button.setAttribute("id", id)
+
+  var s = str
+
+  button.onclick = onc
+  var text = document.createTextNode(text)
+  button.appendChild(text)
+
+  return button;
+}
+
+function makeHidemeDiv(str){
+  var hideme = document.createElement("div")
+
+  hideme.style.display = "none"
+  hideme.appendChild(makeButton("close", "x", function(e){
+    // alert("On blur for the hideme div")
+    hideme.style.display = "none"
+  }, str))
+
+  var pre = document.createElement("pre")
+  pre.innerHTML += str
+  pre.onclick = function (e){
+    selectText(pre)
+  }
+  hideme.appendChild(pre) 
+
+  return hideme
+}

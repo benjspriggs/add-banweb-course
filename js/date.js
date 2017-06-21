@@ -18,6 +18,8 @@ const weekMap = {
 }
 
 // converts a string of single
+// letters to their equivalent
+// in the ICalendar format
 function weekly(string){
   return Array.from(string).map(function(c){
     return weekMap[c]
