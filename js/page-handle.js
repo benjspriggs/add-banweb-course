@@ -34,7 +34,7 @@ function handlePage(){
     return x.parsedEvent()
   })
   console.dir(events);
-  console.log(makeCalendar("add-banweb\nVERSION:2.0", events))
+  console.log(new ICalCalendar("add-banweb", events).asIcs())
 }
 
 // page handling

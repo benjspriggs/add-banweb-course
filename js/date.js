@@ -4,7 +4,7 @@ String.prototype.strip = function(substr){
 
 Date.prototype.toICSDateTime = function(){
   var mom = moment(this)
-  return mom.format("YYYYMMDDTHHMMSS") + "Z";
+  return mom.format("YYYYMMDDTHHMMss") + "Z";
 }
 
 const weekMap = {
